@@ -1,0 +1,45 @@
+version: "3.9"
+
+services:
+  app:
+    build: docker/php-fpm
+    depends_on:
+      - db
+    volumes:
+      - "./:/www"
+
+  nginx:
+    image: nginx:1.25-alpine
+    depends_on:
+      - app
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - "./:/www"
+      - "./docker/nginx/conf.d/development.conf:/etc/nginx/nginx.conf"
+
+  db:
+    image: mysql:8.0
+    ports:
+      - "3306:3306"
+    volumes:
+      - "database:/var/lib/mysql"
+      - "./database/snapshots:/dumps"
+    environment:
+      - "MYSQL_ROOT_HOST=%"
+      - "MYSQL_ROOT_PASSWORD=${DB_PASSWORD}"
+      - "MYSQL_DATABASE=${DB_DATABASE}"
+      - "MYSQL_USER=${DB_USERNAME}"
+      - "MYSQL_PASSWORD=${DB_PASSWORD}"
+    command: [
+      "--character-set-server=utf8mb4",
+      "--collation-server=utf8mb4_general_ci",
+      "--default-storage-engine=innodb",
+      "--innodb-file-per-table",
+      "--explicit_defaults_for_timestamp=1",
+      "--default-time-zone=+00:00"
+    ]
+
+volumes:
+  database:
