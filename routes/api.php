@@ -17,5 +17,8 @@ Route::as('v1.')
     ->prefix('v1')
     ->group(function () {
         Route::post('login', V1\LoginController::class);
-    });
 
+        Route::middleware(['auth:sanctum'])->group(function () {
+            Route::resource('task', V1\TaskController::class)->except(['create', 'edit']);
+        });
+    });
