@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Enum\TaskStatusEnum;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -28,7 +29,9 @@ class StoreTaskRequest extends FormRequest
             'priority' => ['required', 'in:1,2,3,4,5'],
             'parentId' => [
                 'nullable',
-                Rule::exists('tasks', 'parent_id')->where('user_id', $this->user()->id),
+                Rule::exists('tasks', 'id')
+                    ->where('user_id', $this->user()->id)
+                    ->where('status', TaskStatusEnum::ToDo),
             ],
         ];
     }
