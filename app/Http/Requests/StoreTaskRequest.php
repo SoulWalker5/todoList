@@ -26,9 +26,10 @@ class StoreTaskRequest extends FormRequest
         return [
             'title' => ['required', 'string'],
             'description' => ['nullable', 'string'],
-            'priority' => ['required', 'in:1,2,3,4,5'],
+            'priority' => ['required', 'integer', 'in:1,2,3,4,5'],
             'parentId' => [
                 'nullable',
+                'integer',
                 Rule::exists('tasks', 'id')
                     ->where('user_id', $this->user()->id)
                     ->where('status', TaskStatusEnum::ToDo),
