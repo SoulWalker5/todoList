@@ -32,8 +32,10 @@ class TaskController extends Controller
     {
         $task = $this->taskService->createTask(
             new CreateTaskDTO(
-                ...
-                $request->validated() + ['status' => TaskStatusEnum::ToDo, 'userId' => $request->user()->id]
+                ...$request->validated() + [
+                    'status' => TaskStatusEnum::ToDo,
+                    'userId' => $request->user()->id,
+                ]
             )
         );
 
