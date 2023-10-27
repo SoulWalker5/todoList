@@ -6,7 +6,7 @@ use App\Enum\TaskStatusEnum;
 use App\Helpers\RequestHelpers;
 use App\Models\User;
 
-class CreateTaskDTO extends DTO
+class TaskDTO extends DTO
 {
     public readonly User $user;
 
@@ -15,7 +15,7 @@ class CreateTaskDTO extends DTO
         public readonly int $priority,
         public readonly int $userId,
         public readonly ?string $description = null,
-        public readonly ?TaskStatusEnum $status = null,
+        public readonly ?TaskStatusEnum $status = TaskStatusEnum::ToDo,
         public readonly ?int $parentId = null,
     ) {
     }

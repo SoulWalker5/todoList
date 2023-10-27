@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api\v1;
 
 use App\DTO\CompleteTaskDTO;
-use App\DTO\CreateTaskDTO;
+use App\DTO\TaskDTO;
 use App\DTO\TaskFilteringDTO;
 use App\Enum\TaskStatusEnum;
 use App\Http\Controllers\Controller;
@@ -47,11 +47,8 @@ class TaskController extends Controller
     public function store(StoreTaskRequest $request): JsonResource
     {
         $task = $this->taskService->createTask(
-            new CreateTaskDTO(
-                ...$request->validated() + [
-                    'status' => TaskStatusEnum::ToDo,
-                    'userId' => $request->user()->id,
-                ]
+            new TaskDTO(
+                ...$request->validated() + ['userId' => $request->user()->id]
             )
         );
 
@@ -65,7 +62,7 @@ class TaskController extends Controller
     {
         $this->taskService->updateTask(
             $task,
-            new CreateTaskDTO(...$request->validated() + ['userId' => $request->user()->id])
+            new TaskDTO(...$request->validated() + ['userId' => $request->user()->id])
         );
 
         return new TaskResource($task);
