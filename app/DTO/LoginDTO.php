@@ -2,13 +2,10 @@
 
 namespace App\DTO;
 
-use App\DTO\Concrete\Arrayable as ArrayableTrait;
-use Illuminate\Contracts\Support\Arrayable;
 
-class LoginDTO implements Arrayable
+class LoginDTO extends DTO
 {
-    use ArrayableTrait;
-    public function __construct(private readonly string $email, private readonly string $password)
+    public function __construct(public readonly string $email, public readonly string $password)
     {
     }
 }

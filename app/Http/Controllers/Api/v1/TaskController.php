@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Api\v1;
 
-use App\DTO\TaskDTO;
+use App\DTO\CreateTaskDTO;
 use App\Enum\TaskStatusEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreTaskRequest;
@@ -31,7 +31,10 @@ class TaskController extends Controller
     public function store(StoreTaskRequest $request)
     {
         $task = $this->taskService->createTask(
-            new TaskDTO(...$request->validated() + ['status' => TaskStatusEnum::ToDo, 'userId' => $request->user()->id])
+            new CreateTaskDTO(
+                ...
+                $request->validated() + ['status' => TaskStatusEnum::ToDo, 'userId' => $request->user()->id]
+            )
         );
 
         return new TaskResource($task);
@@ -42,7 +45,10 @@ class TaskController extends Controller
      */
     public function update(UpdateTaskRequest $request, Task $task)
     {
-        $this->taskService->updateTask($task, new TaskDTO(...$request->validated() + ['userId' => $request->user()->id]));
+        $this->taskService->updateTask(
+            $task,
+            new CreateTaskDTO(...$request->validated() + ['userId' => $request->user()->id])
+        );
 
         return new TaskResource($task);
     }
