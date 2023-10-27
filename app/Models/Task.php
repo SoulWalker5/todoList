@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Collection;
 
 /**
  * @property int $id
@@ -18,7 +19,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string|null $description
  * @property TaskStatusEnum $status
  * @property int $priority
+ * @property bool $has_todo_tasks
  * @property CarbonInterface $completed_at
+ * @property-read Collection<Task> $children
+ * @property-read Task|null $parent
  */
 class Task extends Model
 {
@@ -54,6 +58,11 @@ class Task extends Model
     public function isNotDone(): bool
     {
         return $this->status === TaskStatusEnum::ToDo;
+    }
+
+    public function isCompleted(): bool
+    {
+        return $this->status === TaskStatusEnum::Done;
     }
 
     public function scopeParentOnly(Builder $builder): Builder

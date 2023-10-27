@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('description')->nullable();
             $table->string('status');
             $table->tinyInteger('priority');
+            $table->boolean('has_todo_tasks')->default(false);
             $table->timestamp('completed_at')->nullable();
             $table->timestamps();
         });

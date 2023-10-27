@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\Api\v1;
 
+use App\DTO\CompleteTaskDTO;
 use App\DTO\CreateTaskDTO;
 use App\Enum\TaskStatusEnum;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CompleteTaskRequest;
 use App\Http\Requests\DeleteTaskRequest;
 use App\Http\Requests\StoreTaskRequest;
 use App\Http\Requests\UpdateTaskRequest;
@@ -30,7 +32,7 @@ class TaskController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreTaskRequest $request)
+    public function store(StoreTaskRequest $request): JsonResource
     {
         $task = $this->taskService->createTask(
             new CreateTaskDTO(
@@ -47,7 +49,7 @@ class TaskController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateTaskRequest $request, Task $task)
+    public function update(UpdateTaskRequest $request, Task $task): JsonResource
     {
         $this->taskService->updateTask(
             $task,
@@ -60,9 +62,15 @@ class TaskController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function complete(CompleteTaskRequest $request, Task $task): JsonResponse
     {
-        //
+        if (!$this->taskService->canBeCompleted($task)) {
+            return new JsonResponse(['message' => 'This task cannot be completed'], Response::HTTP_FORBIDDEN);
+        }
+
+        $this->taskService->updateTask($task, new CompleteTaskDTO(now()));
+
+        return new JsonResponse(['message' => 'Completed successfully']);
     }
 
     /**
@@ -72,6 +80,6 @@ class TaskController extends Controller
     {
         $this->taskService->deleteTask($task);
 
-        return new JsonResponse();
+        return new JsonResponse(['message' => 'Deleted successfully']);
     }
 }

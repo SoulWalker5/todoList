@@ -19,6 +19,7 @@ Route::as('v1.')
         Route::post('login', V1\LoginController::class);
 
         Route::middleware(['auth:sanctum'])->group(function () {
+            Route::post('task/{task}/complete', [V1\TaskController::class, 'complete'])->name('task.complete');
             Route::resource('task', V1\TaskController::class)->except(['create', 'edit']);
         });
     });
