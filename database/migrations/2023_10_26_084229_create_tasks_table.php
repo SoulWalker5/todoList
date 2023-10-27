@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('tasks', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->unsignedBigInteger('parent_id')->nullable();
-            $table->string('title');
-            $table->string('description')->nullable();
+            $table->unsignedBigInteger('parent_id')->nullable()->index();
+            $table->string('title')->fulltext();
+            $table->string('description')->nullable()->fulltext();
             $table->string('status');
             $table->tinyInteger('priority');
             $table->boolean('has_todo_tasks')->default(false);

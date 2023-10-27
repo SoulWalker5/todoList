@@ -3,7 +3,9 @@
 namespace App\Services;
 
 use App\DTO\DTO;
+use App\DTO\TaskFilteringDTO;
 use App\Models\Task;
+use App\Models\User;
 use App\Repositories\TaskRepository;
 
 class TaskService
@@ -11,6 +13,16 @@ class TaskService
     public function __construct(private readonly TaskRepository $repository)
     {
     }
+
+    public function buildTasksTree(User $user, TaskFilteringDTO $dto)
+    {
+        $tasks = $this->repository->getUserParentTasks($user, $dto);
+
+        return $tasks->each(function (Task $task) {
+            $this->loadNestedTasks($task);
+        });
+    }
+
 
     public function loadNestedTasks(Task $task): void
     {
@@ -47,11 +59,16 @@ class TaskService
 
     public function createTask(DTO $dto): Task
     {
-        return $this->repository->create($dto->toArray());
+        return $this->repository->create($dto);
     }
 
     public function updateTask(Task $task, DTO $dto): bool
     {
-        return $this->repository->update($task, $dto->toArray());
+        return $this->repository->update($task, $dto);
+    }
+
+    public function deleteTask(Task $task): bool
+    {
+        return $this->repository->delete($task);
     }
 }
