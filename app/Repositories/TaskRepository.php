@@ -16,6 +16,7 @@ class TaskRepository
     public function getUserParentTasks(User $user, TaskFilteringDTO $dto): Collection
     {
         return $user->tasks()
+            ->with('children')
             ->when($dto->status, function (Builder $query) use ($dto) {
                 $query->where('status', $dto->status);
             })

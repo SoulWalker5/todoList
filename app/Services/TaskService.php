@@ -26,7 +26,7 @@ class TaskService
 
     public function loadNestedTasks(Task $task): void
     {
-        $task->load('children');
+        $task->loadMissing('children');
         $task->children->each(function (Task $task) {
             if ($task->parent_id === null) {
                 return;
